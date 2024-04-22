@@ -8,9 +8,9 @@ This simple application is for the sake of recalling HTML, CSS, vanilla JS, and 
 ## Setup
 
 ```
-$ git clone git@github.com:reyolan/slack-app.git
-$ cd slack-app
-$ npm install
+$ git clone git@github.com:reynardmark/simple-calculator.git
+$ cd simple-calculator
+$ yarn
 ```
 
 ### Starting the app
