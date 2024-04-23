@@ -3,9 +3,13 @@ class SimpleCalculator {
   private secondNumber: number;
 
   private addition: Operation;
-  
-  constructor(addition: Operation,
-    subtraction: Operation, multiplication: Operation, division: Operation) {
+
+  constructor(
+    addition: Operation,
+    subtraction: Operation,
+    multiplication: Operation,
+    division: Operation,
+  ) {
     this.firstNumber = 0;
     this.secondNumber = 0;
     this.addition = addition;
@@ -13,5 +17,5 @@ class SimpleCalculator {
 
   private add(): number {
     return this.addition.operate(this.firstNumber, this.secondNumber);
-  }  
+  }
 }
