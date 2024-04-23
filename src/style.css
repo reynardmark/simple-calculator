@@ -1,96 +1,85 @@
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-size: 62.5%;
 }
 
 body {
-  margin: 0;
+  font-family: "Roboto", sans-serif;
+  color: #DDE3EA;
+}
+
+#main-container {
+  background: #131314;
+  height: 100vh;
+}
+
+.container:first-child {
+  height: 10%;
+  font-size: 6rem;
+}
+
+.container {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.container:nth-child(2) {
+  height: 90%;
+}
+
+#calculator {
+  display:grid;
+
+  min-height: 500px;
+  max-width: 1000px;
+  grid-template: 1fr 4fr/ 1fr;
+  padding: 6px;
+  gap: 4px;
+}
+
+#calculator #display {
+  background: #2A2B2F;
+  font-size: 3rem;
+  border-radius: 1rem;
+  padding: 6px;
+}
+
+#calculator #button-container {
   display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  flex-direction:column;
+  gap: 5px;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+.buttons-row {
+  display: grid;
+  grid-template: 1fr / repeat(4, 1fr);
+  gap: 5px;
 }
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+.buttons-row > button {
+  font-size: 3.4rem;
+  border-radius: 50%;
+  height: 80px; 
+  width: 80px;
+  background: #1B1C1D;
+  color: #DDE3EA;
+  border: 0;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vanilla:hover {
-  filter: drop-shadow(0 0 2em #3178c6aa);
+.buttons-row > button:hover {
+  border-radius: 40%;
+  transition: border-radius .1s linear;
+  cursor:pointer;
 }
 
-.card {
-  padding: 2em;
+.buttons-row > button:active {
+  background: #44403F;
+  transition: background-color .2s ease;
 }
 
-.read-the-docs {
-  color: #888;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.buttons-row .arsenic {
+  background: #41474D;
 }

@@ -4,10 +4,54 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + TS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <title>Simple Calculator</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="main-container">
+      <header class="container">
+        <h1 id="title">Simple Calculator</h1>
+      </header>
+      <div class="container">
+        <div id="calculator">
+          <div id="display">Display</div>
+          <div id="button-container">
+            <div class="buttons-row">
+              <button type="button">AC</button>
+              <button type="button" class="arsenic">+/-</button>
+              <button type="button" class="arsenic">^</button>
+              <button type="button" class="arsenic">/</button>
+            </div>
+            <div class="buttons-row">
+              <button type="button">7</button>
+              <button type="button">8</button>
+              <button type="button">9</button>
+              <button type="button" class="arsenic">X</button>
+            </div>
+            <div class="buttons-row">
+              <button type="button">4</button>
+              <button type="button">5</button>
+              <button type="button">6</button>
+              <button type="button" class="arsenic">-</button>
+            </div>
+            <div class="buttons-row">
+              <button type="button">1</button>
+              <button type="button">2</button>
+              <button type="button">3</button>
+              <button type="button" class="arsenic">+</button>
+            </div>
+            <div class="buttons-row">
+              <button type="button">0</button>
+              <button type="button" >.</button>
+              <button type="button">&#232;</button>
+              <button type="button" class="arsenic">=</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
