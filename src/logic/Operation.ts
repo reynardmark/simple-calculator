@@ -1,3 +1,3 @@
 interface Operation {
-  operate(firstNumber: number, secondNumber: number): number;
+  calculate(firstNumber: number, secondNumber: number): number;
 }

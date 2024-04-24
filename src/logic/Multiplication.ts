@@ -1,6 +1,5 @@
-class Multiplication implements Operation {
-
-  operate(num1: number, num2: number) {
+export default class Multiplication implements Operation {
+  calculate(num1: number, num2: number) {
     return num1 * num2;
   }
 }

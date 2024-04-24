@@ -1,6 +1,5 @@
-class Division implements Operation {
-
-  operate(num1: number, num2: number) {
+export default class Division implements Operation {
+  calculate(num1: number, num2: number) {
     return num1 / num2;
   }
 }

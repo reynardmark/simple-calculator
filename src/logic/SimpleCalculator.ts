@@ -1,7 +1,4 @@
-class SimpleCalculator {
-  private firstNumber: number;
-  private secondNumber: number;
-
+export default class SimpleCalculator {
   private addition: Operation;
   private subtraction: Operation;
   private multiplication: Operation;
@@ -15,9 +12,6 @@ class SimpleCalculator {
     division: Operation,
     exponentiation: Operation,
   ) {
-    this.firstNumber = 0;
-    this.secondNumber = 0;
-
     this.addition = addition;
     this.subtraction = subtraction;
     this.multiplication = multiplication;
@@ -25,39 +19,23 @@ class SimpleCalculator {
     this.exponentiation = exponentiation;
   }
 
-  public getFirstNumber(): number {
-    return this.firstNumber;
+  public add(firstNum: number, secondNum: number): number {
+    return this.addition.calculate(firstNum, secondNum);
   }
 
-  public getSecondNumber(): number {
-    return this.secondNumber;
+  public subtract(firstNum: number, secondNum: number): number {
+    return this.subtraction.calculate(firstNum, secondNum);
   }
 
-  public setFirstNumber(number: number): void {
-    this.firstNumber = number;
+  public multiply(firstNum: number, secondNum: number): number {
+    return this.multiplication.calculate(firstNum, secondNum);
   }
 
-  public setSecondNumber(number: number): void {
-    this.secondNumber = number;
+  public divide(firstNum: number, secondNum: number): number {
+    return this.division.calculate(firstNum, secondNum);
   }
 
-  private add(): number {
-    return this.addition.operate(this.firstNumber, this.secondNumber);
-  }
-
-  private substract(): number {
-    return this.subtraction.operate(this.firstNumber, this.secondNumber);
-  }
-
-  private multiply(): number {
-    return this.multiplication.operate(this.firstNumber, this.secondNumber);
-  }
-
-  private divide(): number {
-    return this.division.operate(this.firstNumber, this.secondNumber);
-  }
-
-  private raisedTo(): number {
-    return this.exponentiation.operate(this.firstNumber, this.secondNumber);
+  public raisedTo(firstNum: number, secondNum: number): number {
+    return this.exponentiation.calculate(firstNum, secondNum);
   }
 }
