@@ -1,41 +1,72 @@
 import { SimpleCalculator } from "src/logic/index";
 import { EntryPad } from "src/domain";
-import EventHandler from "./EventHandler";
-
 export default class CalculatorUserInterface {
   private calculator: SimpleCalculator;
   private entryPad: EntryPad;
-  private eventHandler: EventHandler;
+  private topDisplay: HTMLElement;
+  private bottomDisplay: HTMLElement;
+
+  //put all important HTML elements here such as top and bottom display
 
   constructor(
     entryPad: EntryPad,
     calculator: SimpleCalculator,
-    eventHandler: EventHandler,
+    topDisplay: HTMLElement,
+    bottomDisplay: HTMLElement,
   ) {
     this.entryPad = entryPad;
     this.calculator = calculator;
-    this.eventHandler = eventHandler;
+
+    this.topDisplay = topDisplay;
+    this.bottomDisplay = bottomDisplay;
   }
 
   start() {
-    //start calcu
-    this.inputNumbersAndOperations();
+    this.equalsEvent();
     this.limitToOneOperation();
-    this.eventHandler.run();
+    this.clearBottomDisplayEvent();
+    this.clearDisplayEvent();
+    this.clearPreviousCharEvent();
+    this.reflectKeyValueToDisplayEvent();
+  }
+
+  private preventOperationKeysToShow() {
+    //when input is empty
+    if (!this.topDisplay.textContent) {
+    }
   }
 
   private limitToOneOperation() {
-    const topDisplay = document.querySelector("#top");
+    //stop repeating text operation
 
-    const regexOne = new RegExp("([0-9]){1,8}([+]*)([0-9]){1,8}");
-    if (!topDisplay?.textContent?.match(regexOne) && topDisplay?.textContent) {
-      console.log("ERROR");
-    }
+    const keysToReflect = document.querySelectorAll(".reflect-key");
+
+    // keysToReflect.forEach((v) => {
+    //   v.addEventListener("click", (_e) => {
+    //     console.log(/[+,-,x,÷,^]{1}/.test(this.topDisplay?.textContent ?? ""));
+    //     if (/[+,-,x,÷,^]{2}/.test(this.topDisplay?.textContent ?? "")) {
+    //       this.topDisplay.textContent =
+    //         this.topDisplay?.textContent?.slice(0, -1) ?? "";
+    //     }
+    //   });
+    // });
+
+    //observer??
+    // const observer = new MutationObserver(([topDisplayElement], _observer) => {
+    //   if (/[+,-,x,÷,^]{1}/.test(topDisplayElement.target.textContent ?? "")) {
+    //     console.log(topDisplayElement.target.textContent);
+    //     //replace the operation (?)
+    //   }
+    // });
+
+    // observer.observe(this.topDisplay, { childList: true });
   }
 
   private getResult(): number {
     const firstNumber = this.entryPad.getFirstNumber();
     const secondNumber = this.entryPad.getSecondNumber();
+
+    console.log(this.entryPad.getOperation());
 
     switch (this.entryPad.getOperation()) {
       case "+":
@@ -45,7 +76,7 @@ export default class CalculatorUserInterface {
       case "x":
         return this.calculator.multiply(firstNumber, secondNumber);
       case "÷":
-        return this.calculator.multiply(firstNumber, secondNumber);
+        return this.calculator.divide(firstNumber, secondNumber);
       case "^":
         return this.calculator.raisedTo(firstNumber, secondNumber);
       default:
@@ -54,20 +85,20 @@ export default class CalculatorUserInterface {
   }
 
   private printResult() {
-    const bottomDisplay = document.querySelector("#bottom") as HTMLElement;
+    const result = this.getResult();
 
-    bottomDisplay.textContent = String(this.getResult());
+    this.bottomDisplay.textContent = String(result);
+
+    this.entryPad.setFirstNumber(result);
+    this.entryPad.setSecondNumber(0);
   }
 
-  private inputNumbersAndOperations() {
-    //pag na press yung equals, don ka palang magsplit ng string
-    //then setfirstnumber, set second number, calculate thru simple calculator
+  private equalsEvent() {
     const equals = document.querySelector("[data-logic='equals']");
-    const topDisplay = document.querySelector("#top") as HTMLElement;
 
     equals?.addEventListener("click", (_) => {
-      const [firstNumber, secondNumber] = topDisplay.textContent
-        ?.split(/[+,-,x,÷,^]/)
+      const [firstNumber, secondNumber] = this.topDisplay.textContent
+        ?.split(/[+,\-\,x,÷,^]/)
         .map((v) => Number(v)) as number[];
 
       if (!secondNumber) {
@@ -75,35 +106,62 @@ export default class CalculatorUserInterface {
       }
 
       const operationIndex = String(firstNumber).split("").length;
-      const operation = topDisplay.textContent![operationIndex] as MathSymbol;
+      const operation = this.topDisplay.textContent![
+        operationIndex
+      ] as MathSymbol;
 
       this.entryPad.setOperation(operation);
       this.entryPad.setFirstNumber(firstNumber);
       this.entryPad.setSecondNumber(secondNumber);
 
       this.printResult();
-
-      //pag second + na, equate mo na agad tapos set firstNumber ung result
     });
   }
 
-  private clearOneChar() {}
+  private clearBottomDisplayEvent() {
+    const keysToReflect = document.querySelectorAll(".reflect-key");
 
-  // private observeTopDisplayChange() {
-  //   const topDisplay = document.querySelector("#top")!;
+    keysToReflect.forEach((v) => {
+      v.addEventListener("click", (_e) => {
+        this.bottomToTopDisplay();
+        this.bottomDisplay.textContent = "";
+      });
+    });
+  }
 
-  //   const changeTextObserver = new MutationObserver(([e], _observer) => {
-  //     console.log(e.target.textContent);
+  private bottomToTopDisplay() {
+    if (this.bottomDisplay.textContent) {
+      this.topDisplay.textContent = this.bottomDisplay.textContent;
+    }
+  }
 
-  //   });
+  private clearDisplayEvent() {
+    const clearKey = document.querySelector("[data-logic='clear']");
 
-  //   changeTextObserver.observe(topDisplay, { childList: true });
-  // }
+    clearKey?.addEventListener("click", (_e) => {
+      this.bottomDisplay.textContent = "";
+      this.topDisplay.textContent = "";
+    });
+  }
 
-  private addResult() {
-    this.calculator.add(
-      this.entryPad.getFirstNumber(),
-      this.entryPad.getSecondNumber(),
-    );
+  private clearPreviousCharEvent() {
+    const backspaceKey = document.querySelector("[data-logic='backspace']");
+
+    backspaceKey?.addEventListener("click", (_e) => {
+      this.topDisplay.textContent =
+        this.topDisplay.textContent?.slice(0, -1) ?? "";
+    });
+  }
+
+  private reflectKeyValueToDisplayEvent() {
+    const keysToReflect = document.querySelectorAll(".reflect-key");
+
+    keysToReflect.forEach((v) => {
+      v.addEventListener("click", (e) => {
+        const textToDisplay = (e.target as HTMLElement).textContent ?? "";
+        this.topDisplay.textContent =
+          this.topDisplay.textContent + textToDisplay;
+      });
+    });
   }
 }

@@ -8,7 +8,10 @@ import {
   SimpleCalculator,
 } from "./logic/index";
 import { EntryPad } from "./domain";
-import { CalculatorUserInterface, EventHandler } from "./ui";
+import { CalculatorUserInterface } from "./ui";
+
+const topDisplay = document.querySelector("#top") as HTMLElement;
+const bottomDisplay = document.querySelector("#bottom") as HTMLElement;
 
 const simpleCalculator: SimpleCalculator = new SimpleCalculator(
   new Addition(),
@@ -21,7 +24,8 @@ const simpleCalculator: SimpleCalculator = new SimpleCalculator(
 const userInterface: CalculatorUserInterface = new CalculatorUserInterface(
   new EntryPad(),
   simpleCalculator,
-  new EventHandler(),
+  topDisplay,
+  bottomDisplay,
 );
 
 userInterface.start();
