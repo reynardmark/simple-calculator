@@ -23,43 +23,16 @@ export default class CalculatorUserInterface {
 
   start() {
     this.equalsEvent();
-    this.limitToOneOperation();
+    this.limitToOneOperationAndDecimalEvent();
     this.clearBottomDisplayEvent();
     this.clearDisplayEvent();
     this.clearPreviousCharEvent();
     this.reflectKeyValueToDisplayEvent();
+    this.replaceNumberIfEmptyTopDisplayEvent();
   }
 
-  private preventOperationKeysToShow() {
-    //when input is empty
-    if (!this.topDisplay.textContent) {
-    }
-  }
-
-  private limitToOneOperation() {
-    //stop repeating text operation
-
-    const keysToReflect = document.querySelectorAll(".reflect-key");
-
-    // keysToReflect.forEach((v) => {
-    //   v.addEventListener("click", (_e) => {
-    //     console.log(/[+,-,x,÷,^]{1}/.test(this.topDisplay?.textContent ?? ""));
-    //     if (/[+,-,x,÷,^]{2}/.test(this.topDisplay?.textContent ?? "")) {
-    //       this.topDisplay.textContent =
-    //         this.topDisplay?.textContent?.slice(0, -1) ?? "";
-    //     }
-    //   });
-    // });
-
-    //observer??
-    // const observer = new MutationObserver(([topDisplayElement], _observer) => {
-    //   if (/[+,-,x,÷,^]{1}/.test(topDisplayElement.target.textContent ?? "")) {
-    //     console.log(topDisplayElement.target.textContent);
-    //     //replace the operation (?)
-    //   }
-    // });
-
-    // observer.observe(this.topDisplay, { childList: true });
+  private limitToOneOperationAndDecimalEvent() {
+    const operations = document.querySelectorAll("[data-logic='operation']");
   }
 
   private getResult(): number {
@@ -106,6 +79,7 @@ export default class CalculatorUserInterface {
       }
 
       const operationIndex = String(firstNumber).split("").length;
+
       const operation = this.topDisplay.textContent![
         operationIndex
       ] as MathSymbol;
@@ -140,7 +114,7 @@ export default class CalculatorUserInterface {
 
     clearKey?.addEventListener("click", (_e) => {
       this.bottomDisplay.textContent = "";
-      this.topDisplay.textContent = "";
+      this.topDisplay.textContent = "0";
     });
   }
 
@@ -148,19 +122,72 @@ export default class CalculatorUserInterface {
     const backspaceKey = document.querySelector("[data-logic='backspace']");
 
     backspaceKey?.addEventListener("click", (_e) => {
-      this.topDisplay.textContent =
-        this.topDisplay.textContent?.slice(0, -1) ?? "";
+      if (this.topDisplay.textContent !== "0") {
+        this.topDisplay.textContent =
+          this.topDisplay.textContent?.slice(0, -1) ?? "";
+      }
     });
   }
 
   private reflectKeyValueToDisplayEvent() {
-    const keysToReflect = document.querySelectorAll(".reflect-key");
+    const operations = document.querySelectorAll("[data-logic='operation']");
+    const numbers = document.querySelectorAll("[data-logic='number']");
+    const point = document.querySelector("[data-logic='point']");
 
-    keysToReflect.forEach((v) => {
+    //for numbers
+    numbers.forEach((v) => {
       v.addEventListener("click", (e) => {
         const textToDisplay = (e.target as HTMLElement).textContent ?? "";
-        this.topDisplay.textContent =
-          this.topDisplay.textContent + textToDisplay;
+
+        if (this.topDisplay.textContent !== "0") {
+          this.topDisplay.textContent =
+            this.topDisplay.textContent + textToDisplay;
+        }
+      });
+    });
+
+    //for operations - TODO: check also the occurences
+    operations.forEach((v) => {
+      v.addEventListener("click", (e) => {
+        const textToDisplay = (e.target as HTMLElement).textContent ?? "";
+        const topDisplayLastChar = this.topDisplay.textContent?.slice(-1) ?? "";
+
+        //TODO: check also the occurences
+        if (/[+,\-\,x,÷,^]/.test(topDisplayLastChar)) {
+          const textToRemain = this.topDisplay.textContent?.slice(0, -1);
+          this.topDisplay.textContent = textToRemain + textToDisplay;
+          return;
+        }
+
+        if (this.topDisplay.textContent !== "0") {
+          this.topDisplay.textContent =
+            this.topDisplay.textContent + textToDisplay;
+        }
+      });
+    });
+
+    //for decimal point - TODO: check for occurrences and if last char so no duplication
+
+    //     //kapag nagtype ka tapos ang last char is Mathsymbols, replace lang nang replace
+    //     //replace lang kapag pinindot yung + - / * ^ pati decimal point
+
+    //     //if nasa last char, replace lang last string (kapag ang pinindot is operations or decimal)
+
+    //     //if hindi last char, wag iinput (for operations)
+    //     //if hindi last char, split yung array with + - / * ^, then check if may decimal na
+  }
+
+  private replaceNumberIfEmptyTopDisplayEvent() {
+    const numberBtns = document.querySelectorAll("[data-logic='number']");
+
+    numberBtns.forEach((v) => {
+      v.addEventListener("click", (e) => {
+        if (this.topDisplay.textContent === "0") {
+          this.topDisplay.textContent = this.topDisplay.textContent.replace(
+            "0",
+            (e.target as HTMLElement).textContent ?? "",
+          );
+        }
       });
     });
   }

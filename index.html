@@ -20,66 +20,39 @@
       <div class="container">
         <div id="calculator">
           <div id="display">
-            <div id="top"></div>
+            <div id="top">0</div>
             <div id="bottom"></div>
           </div>
           <div id="button-container">
             <div class="buttons-row">
               <button type="button" data-logic="clear">AC</button>
               <button type="button" class="arsenic">+/-</button>
-              <!-- prettier-ignore -->
-              <button
-                type="button"
-                class="arsenic reflect-key"
-                data-logic="operation"
-              >^</button>
-              <!-- prettier-ignore -->
-              <button
-                type="button"
-                class="arsenic reflect-key"
-                data-logic="operation"
-              >÷</button>
+              <button type="button" class="arsenic reflect-key" data-logic="operation">^</button>
+              <button type="button" class="arsenic reflect-key" data-logic="operation">÷</button>
             </div>
             <div class="buttons-row">
-              <button type="button" class="reflect-key">7</button>
-              <button type="button" class="reflect-key">8</button>
-              <button type="button" class="reflect-key">9</button>
-              <!-- prettier-ignore -->
-              <button
-                type="button"
-                class="arsenic reflect-key"
-                data-logic="operation"
-              >x</button>
+              <button type="button" class="reflect-key" data-logic="number">7</button>
+              <button type="button" class="reflect-key" data-logic="number">8</button>
+              <button type="button" class="reflect-key" data-logic="number">9</button>
+              <button type="button" class="arsenic reflect-key" data-logic="operation">x</button>
             </div>
             <div class="buttons-row">
-              <button type="button" class="reflect-key">4</button>
-              <button type="button" class="reflect-key">5</button>
-              <button type="button" class="reflect-key">6</button>
-              <!-- prettier-ignore -->
-              <button
-                type="button"
-                class="arsenic reflect-key"
-                data-logic="operation"
-              >-</button>
+              <button type="button" class="reflect-key" data-logic="number">4</button>
+              <button type="button" class="reflect-key" data-logic="number">5</button>
+              <button type="button" class="reflect-key" data-logic="number">6</button>
+              <button type="button" class="arsenic reflect-key" data-logic="operation">-</button>
             </div>
             <div class="buttons-row">
-              <button type="button" class="reflect-key">1</button>
-              <button type="button" class="reflect-key">2</button>
-              <button type="button" class="reflect-key">3</button>
-              <!-- prettier-ignore -->
-              <button
-                type="button"
-                class="arsenic reflect-key"
-                data-logic="operation"
-              >+</button>
+              <button type="button" class="reflect-key" data-logic="number">1</button>
+              <button type="button" class="reflect-key" data-logic="number">2</button>
+              <button type="button" class="reflect-key" data-logic="number">3</button>
+              <button type="button" class="arsenic reflect-key" data-logic="operation">+</button>
             </div>
             <div class="buttons-row">
-              <button type="button" class="reflect-key">0</button>
-              <button type="button" class="reflect-key">.</button>
+              <button type="button" class="reflect-key" data-logic="number">0</button>
+              <button type="button" class="reflect-key" data-logic="point">.</button>
               <button type="button" data-logic="backspace">⌫</button>
-              <!-- prettier-ignore -->
-              <button type="button" class="arsenic" data-logic="equals">
-              =</button>
+              <button type="button" class="arsenic" data-logic="equals">=</button>
             </div>
           </div>
         </div>
