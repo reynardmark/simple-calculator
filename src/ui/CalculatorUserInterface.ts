@@ -23,16 +23,11 @@ export default class CalculatorUserInterface {
 
   start() {
     this.equalsEvent();
-    this.limitToOneOperationAndDecimalEvent();
     this.clearBottomDisplayEvent();
     this.clearDisplayEvent();
     this.clearPreviousCharEvent();
     this.reflectKeyValueToDisplayEvent();
     this.replaceNumberIfEmptyTopDisplayEvent();
-  }
-
-  private limitToOneOperationAndDecimalEvent() {
-    const operations = document.querySelectorAll("[data-logic='operation']");
   }
 
   private getResult(): number {
@@ -146,24 +141,67 @@ export default class CalculatorUserInterface {
       });
     });
 
-    //for operations - TODO: check also the occurences
     operations.forEach((v) => {
       v.addEventListener("click", (e) => {
         const textToDisplay = (e.target as HTMLElement).textContent ?? "";
         const topDisplayLastChar = this.topDisplay.textContent?.slice(-1) ?? "";
 
-        //TODO: check also the occurences
+        //checks for last char
         if (/[+,\-\,x,÷,^]/.test(topDisplayLastChar)) {
           const textToRemain = this.topDisplay.textContent?.slice(0, -1);
           this.topDisplay.textContent = textToRemain + textToDisplay;
           return;
         }
 
+        if (topDisplayLastChar === ".") {
+          return;
+        }
+
+        //occurences
+        if (
+          (
+            this.topDisplay.textContent?.match(
+              /[0-9]{1,}[+,\-\,x,÷,^]{1}[0-9]{1,}/,
+            ) ?? []
+          ).length > 0
+        ) {
+          return;
+        }
+
+        //reflect on display
         if (this.topDisplay.textContent !== "0") {
           this.topDisplay.textContent =
             this.topDisplay.textContent + textToDisplay;
         }
       });
+    });
+
+    point?.addEventListener("click", (e) => {
+      const POINT_PATTERN = /[0-9]{1,}[.]{1}[0-9]{1,}/;
+
+      const textToDisplay = (e.target as HTMLElement).textContent ?? "";
+      const topDisplayLastChar = this.topDisplay.textContent?.slice(-1) ?? "";
+      const topDisplayContent =
+        this.topDisplay.textContent?.split(/[+,\-\,x,÷,^]/) ?? [];
+
+      //check last char
+      if (topDisplayLastChar === ".") {
+        return;
+      }
+
+      //occurrence
+
+      if (topDisplayContent[0].match(POINT_PATTERN) ?? [].length > 0) {
+        if (!topDisplayContent[1]) {
+          return;
+        } else {
+          if (topDisplayContent[1].match(POINT_PATTERN) ?? [].length > 0) {
+            return;
+          }
+        }
+      }
+
+      this.topDisplay.textContent = this.topDisplay.textContent + textToDisplay;
     });
 
     //for decimal point - TODO: check for occurrences and if last char so no duplication
