@@ -7,8 +7,6 @@ export default class CalculatorUserInterface {
   private topDisplay: HTMLElement;
   private bottomDisplay: HTMLElement;
 
-  //put all important HTML elements here such as top and bottom display
-
   constructor(
     entryPad: EntryPad,
     calculator: SimpleCalculator,
@@ -282,52 +280,5 @@ export default class CalculatorUserInterface {
         }
       });
     });
-
-    // const numberBtns = document.querySelectorAll(
-    //   "[data-logic='number']",
-    // ) as NodeListOf<HTMLElement>;
-
-    // numberBtns.forEach((btn) => {
-    //   document.addEventListener("keydown", (e) => {
-    //     e.preventDefault();
-    //     if (e.key === btn.textContent) {
-    //       btn.click();
-    //     }
-    //   });
-    // });
-
-    // const operationBtns = document.querySelectorAll(
-    //   "[data-logic='operation']",
-    // ) as NodeListOf<HTMLElement>;
-
-    // operationBtns.forEach((btn) => {
-    //   document.addEventListener("keydown", (e) => {
-    //     if (e.key === "/" && btn.textContent === "÷") {
-    //       btn.click();
-    //     }
-
-    //     if (e.key === "*" && btn.textContent === "x") {
-    //       btn.click();
-    //     }
-
-    //     if (e.key === btn.textContent) {
-    //       btn.click();
-    //     }
-    //   });
-    // });
-
-    // const backspaceBtn = document.querySelector(
-    //   "[data-logic='backspace']",
-    // ) as HTMLElement;
-
-    // const equalBtn = document.querySelector(
-    //   "[data-logic='equals']",
-    // ) as HTMLElement;
-
-    // document.addEventListener("keydown", (e) => {
-    //   if (e.key === "Backspace") {
-    //     backspaceBtn.click();
-    //   }
-    // });
   }
 }
