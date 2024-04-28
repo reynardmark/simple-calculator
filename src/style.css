@@ -37,7 +37,7 @@ body {
 #calculator {
   display: grid;
   min-height: 500px;
-  max-width: 400px;
+  max-width: 300px;
   grid-template: 1fr 4fr/ 1fr;
   padding: 8px;
   gap: 4px;
@@ -76,6 +76,10 @@ body {
   gap: 5px;
 }
 
+.buttons-row:last-child {
+  grid-template: 1fr / 2fr 1fr 1fr;
+}
+
 .buttons-row > button {
   font-size: 3.4rem;
   border-radius: 50%;
@@ -84,6 +88,12 @@ body {
   background: #1b1c1d;
   color: #dde3ea;
   border: 0;
+}
+
+.buttons-row:last-child > button:first-child {
+  height: auto;
+  width: auto;
+  border-radius: 50%;
 }
 
 .buttons-row > button:hover {

@@ -1,5 +1,6 @@
 import { SimpleCalculator } from "src/logic/index";
 import { EntryPad } from "src/domain";
+import { findIndexSecondOccurrence } from "src/utils";
 export default class CalculatorUserInterface {
   private calculator: SimpleCalculator;
   private entryPad: EntryPad;
@@ -28,13 +29,12 @@ export default class CalculatorUserInterface {
     this.clearPreviousCharEvent();
     this.reflectKeyValueToDisplayEvent();
     this.replaceNumberIfEmptyTopDisplayEvent();
+    this.mapBtnsToKeyboardEvent();
   }
 
   private getResult(): number {
     const firstNumber = this.entryPad.getFirstNumber();
     const secondNumber = this.entryPad.getSecondNumber();
-
-    console.log(this.entryPad.getOperation());
 
     switch (this.entryPad.getOperation()) {
       case "+":
@@ -64,22 +64,30 @@ export default class CalculatorUserInterface {
   private equalsEvent() {
     const equals = document.querySelector("[data-logic='equals']");
 
-    equals?.addEventListener("click", (_) => {
-      const [firstNumber, secondNumber] = this.topDisplay.textContent
-        ?.split(/[+,\-\,x,÷,^]/)
-        .map((v) => Number(v)) as number[];
+    equals?.addEventListener("click", (_e) => {
+      const topDisplayContent = this.topDisplay.textContent ?? "";
+
+      //operation
+      let operationIndex = topDisplayContent?.search(/[+,\-\,x,÷,^]/) ?? 0;
+      if (operationIndex === 0) {
+        operationIndex = topDisplayContent.search(/[+,x,÷,^]/);
+
+        if (operationIndex === -1) {
+          operationIndex = findIndexSecondOccurrence(topDisplayContent, "-");
+        }
+      }
+
+      const operation = topDisplayContent[operationIndex] as MathSymbol;
+      this.entryPad.setOperation(operation);
+
+      const [firstNumber, secondNumber] = topDisplayContent
+        .split(operation)
+        .map((v) => Number(v));
 
       if (!secondNumber) {
         return;
       }
 
-      const operationIndex = String(firstNumber).split("").length;
-
-      const operation = this.topDisplay.textContent![
-        operationIndex
-      ] as MathSymbol;
-
-      this.entryPad.setOperation(operation);
       this.entryPad.setFirstNumber(firstNumber);
       this.entryPad.setSecondNumber(secondNumber);
 
@@ -121,6 +129,13 @@ export default class CalculatorUserInterface {
         this.topDisplay.textContent =
           this.topDisplay.textContent?.slice(0, -1) ?? "";
       }
+
+      if (
+        this.topDisplay.textContent === "-" ||
+        this.topDisplay.textContent === ""
+      ) {
+        this.topDisplay.textContent = "0";
+      }
     });
   }
 
@@ -145,11 +160,33 @@ export default class CalculatorUserInterface {
       v.addEventListener("click", (e) => {
         const textToDisplay = (e.target as HTMLElement).textContent ?? "";
         const topDisplayLastChar = this.topDisplay.textContent?.slice(-1) ?? "";
+        const lastTwoChars = this.topDisplay.textContent?.slice(-2) ?? "";
+
+        //for negative
+        if (textToDisplay === "-" && this.topDisplay.textContent === "0") {
+          this.topDisplay.textContent = "-";
+          return;
+        }
 
         //checks for last char
-        if (/[+,\-\,x,÷,^]/.test(topDisplayLastChar)) {
+        if (/[+,\-\,x,÷,^]{1}/.test(topDisplayLastChar)) {
+          //append
+
+          if (
+            textToDisplay === "-" &&
+            !/[+,\-\,x,÷,^]{1}[-]/.test(lastTwoChars)
+          ) {
+            this.topDisplay.textContent += textToDisplay;
+            return;
+          }
+
+          //replace
+          if (/[+,\-\,x,÷,^]{1}[-]/.test(lastTwoChars)) {
+            return;
+          }
           const textToRemain = this.topDisplay.textContent?.slice(0, -1);
           this.topDisplay.textContent = textToRemain + textToDisplay;
+
           return;
         }
 
@@ -157,11 +194,11 @@ export default class CalculatorUserInterface {
           return;
         }
 
-        //occurences
+        //occurrences
         if (
           (
             this.topDisplay.textContent?.match(
-              /[0-9]{1,}[+,\-\,x,÷,^]{1}[0-9]{1,}/,
+              /[0-9]{1,}[+,\-\,x,÷,^]{1,2}[0-9]{1,}/,
             ) ?? []
           ).length > 0
         ) {
@@ -185,12 +222,11 @@ export default class CalculatorUserInterface {
         this.topDisplay.textContent?.split(/[+,\-\,x,÷,^]/) ?? [];
 
       //check last char
-      if (topDisplayLastChar === ".") {
+      if (topDisplayLastChar.match(/[+,\-\,x,÷,^,.]/) ?? [].length > 0) {
         return;
       }
 
       //occurrence
-
       if (topDisplayContent[0].match(POINT_PATTERN) ?? [].length > 0) {
         if (!topDisplayContent[1]) {
           return;
@@ -203,16 +239,6 @@ export default class CalculatorUserInterface {
 
       this.topDisplay.textContent = this.topDisplay.textContent + textToDisplay;
     });
-
-    //for decimal point - TODO: check for occurrences and if last char so no duplication
-
-    //     //kapag nagtype ka tapos ang last char is Mathsymbols, replace lang nang replace
-    //     //replace lang kapag pinindot yung + - / * ^ pati decimal point
-
-    //     //if nasa last char, replace lang last string (kapag ang pinindot is operations or decimal)
-
-    //     //if hindi last char, wag iinput (for operations)
-    //     //if hindi last char, split yung array with + - / * ^, then check if may decimal na
   }
 
   private replaceNumberIfEmptyTopDisplayEvent() {
@@ -228,5 +254,80 @@ export default class CalculatorUserInterface {
         }
       });
     });
+  }
+
+  private mapBtnsToKeyboardEvent() {
+    const btns = document.querySelectorAll("button") as NodeListOf<HTMLElement>;
+
+    btns.forEach((btn) => {
+      document.addEventListener("keydown", (e) => {
+        if (e.key === btn.textContent) {
+          btn.click();
+        }
+
+        if (e.key === "Backspace" && btn.textContent === "⌫") {
+          btn.click();
+        }
+
+        if (e.key === "/" && btn.textContent === "÷") {
+          btn.click();
+        }
+
+        if (e.key === "*" && btn.textContent === "x") {
+          btn.click();
+        }
+
+        if (e.key === "Enter" && btn.textContent === "=") {
+          btn.click();
+        }
+      });
+    });
+
+    // const numberBtns = document.querySelectorAll(
+    //   "[data-logic='number']",
+    // ) as NodeListOf<HTMLElement>;
+
+    // numberBtns.forEach((btn) => {
+    //   document.addEventListener("keydown", (e) => {
+    //     e.preventDefault();
+    //     if (e.key === btn.textContent) {
+    //       btn.click();
+    //     }
+    //   });
+    // });
+
+    // const operationBtns = document.querySelectorAll(
+    //   "[data-logic='operation']",
+    // ) as NodeListOf<HTMLElement>;
+
+    // operationBtns.forEach((btn) => {
+    //   document.addEventListener("keydown", (e) => {
+    //     if (e.key === "/" && btn.textContent === "÷") {
+    //       btn.click();
+    //     }
+
+    //     if (e.key === "*" && btn.textContent === "x") {
+    //       btn.click();
+    //     }
+
+    //     if (e.key === btn.textContent) {
+    //       btn.click();
+    //     }
+    //   });
+    // });
+
+    // const backspaceBtn = document.querySelector(
+    //   "[data-logic='backspace']",
+    // ) as HTMLElement;
+
+    // const equalBtn = document.querySelector(
+    //   "[data-logic='equals']",
+    // ) as HTMLElement;
+
+    // document.addEventListener("keydown", (e) => {
+    //   if (e.key === "Backspace") {
+    //     backspaceBtn.click();
+    //   }
+    // });
   }
 }
